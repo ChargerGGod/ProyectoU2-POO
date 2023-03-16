@@ -46,8 +46,8 @@ public class Telefono {
 	// Escribe los datos de telefono
 	@Override
 	public String toString() {
-		return "Tipo de telefono: " + tipoTelefono + "\nClave Pais: " + clavePais + "\nNumero de telefono: "
-				+ numTelefono;
+		return  "Numero de telefono: "
+		+ numTelefono + "\nTipo de telefono: " + tipoTelefono + "\nClave Pais: " + clavePais;
 	}
 
 }

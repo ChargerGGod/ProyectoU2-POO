@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class Agenda {
@@ -8,19 +9,10 @@ public class Agenda {
     public static void main(String[] args) {
         contactosIniciales();
 
-        Scanner sc = new Scanner(System.in);
         int x = 0;
         do {
             limpiarConsola();
 
-            // TODO: agregar telefono a persona
-            
-            // TODO: listado por tipo de telefono
-            // TODO: buscar 
-            // TODO: eliminar
-            // TODO: consultar
-            // TODO: ordenar
-            
             // despliega el menu de opciones
             System.out.println(
                     "Ingrese unas de las siguienes opciones:\n\n" +
@@ -40,16 +32,31 @@ public class Agenda {
 
             // comportamiento de cada opcion
             switch (x) {
-                case 1:
+                case 1: {
                     // Escribe por consola el string de los contactos
                     System.out.println(imprimirAgenda());
-                    
+
                     pausarPrograma();
                     break;
-                case 2:
+                }
+                case 2: {
 
+                    System.out.println("Escriba el tipo de telefono de la persona: \n");
+                    char dato = sc.next().charAt(0);
+
+                    ArrayList<Integer> persona = consultarTipoTelefono(dato);
+                    if (persona.size() < 0) {
+                        System.out.println("\nNo se encontro la persona");
+                    } else {
+                        for (Integer index : persona) {
+                            System.out.println(contactos.get(index).toString() + "\n");
+                        }
+                    }
+
+                    pausarPrograma();
                     break;
-                case 3:
+                }
+                case 3: {
                     Contacto nuevoContacto = leerContacto();
 
                     System.out.println("¿Desea agregar un telefono? (Y o N)");
@@ -63,29 +70,101 @@ public class Agenda {
 
                     pausarPrograma();
                     break;
-                case 4:
+                }
+                case 4: {
+                    System.out.println("Escriba el nombre o alias de la persona: " + "\n");
+                    String dato = sc.nextLine();
+
+                    ArrayList<Integer> personas = buscarPersona(dato);
+
+                    if (personas.size() == 0) {
+                        System.out.println("\nNo se encontro la persona");
+                    } else {
+                        for (Integer index : personas) {
+                            System.out.println(contactos.get(index).toString() + "\n");
+                        }
+                    }
+
+                    pausarPrograma();
+                    break;
+                }
+                case 5: {
+                    System.out.println("Escriba el nombre del contacto: ");
+                    String nombre = sc.nextLine();
+                    System.out.println("Escriba el apellido del contacto: ");
+                    String apellido = sc.nextLine();
+
+                    ArrayList<Integer> personas = eliminarPersona(nombre, apellido);
+
+                    if (personas.size() == 0) {
+                        System.out.println("\nNo se encontro la persona");
+                    } else {
+                        for (Integer index : personas) {
+                            System.out.println(contactos.get(index).toString() + "\n");
+
+                            System.out.println("¿Es esta el contacto? (Y o N) \n");
+                            String respuesta = sc.nextLine();
+
+                            if (respuesta.equalsIgnoreCase("y")) {
+                                contactos.remove((int) index);
+                                System.out.println("Contacto borrado con exito!");
+                            }
+                        }
+                    }
+
+                    pausarPrograma();
+                    break;
+                }
+                case 6: {
+
+                    System.out.println("Escriba el nombre, apellido, alias o telefono de la persona: \n");
+                    String dato = sc.nextLine();
+
+                    ArrayList<Integer> persona = consultarPersona(dato);
+
+                    if (persona.size() < 0) {
+                        System.out.println("\nNo se encontro la persona");
+                    } else {
+                        for (Integer index : persona) {
+                            System.out.println(contactos.get(index).toString() + "\n");
+                        }
+                    }
+
+                    pausarPrograma();
+                    break;
+                }
+                case 7: {
+
+                    Collections.sort(contactos);
+
+                    // contactos.sort(new Comparator<Contacto>() {
+                    //     public int compare(Contacto este, Contacto siguiente) {
+                    //         return String.;
+                    //     }
+                    // });
 
                     break;
-                case 5:
-
-                    break;
-                case 6:
-
-                    break;
-                case 7:
-
-                    break;
-                case 0:
+                }
+                case 0: {
                     x = 0;
                     break;
+                }
+                default: {
+                    System.out.println("¡Error! No selecciono ninguna opcion existente, intente de nuevo");
+                    break;
+                }
+                // TODO: agregar telefono a persona
 
             }
         } while (x != 0);
 
         limpiarConsola();
 
+        sc.close();
         System.out.println("¡El programa ha terminado con exito!");
     }
+
+    // lee contacto y regresa un objeto contacto
 
     public static Contacto leerContacto() {
 
@@ -102,6 +181,8 @@ public class Agenda {
         return nuevoContacto;
     }
 
+    // recibe un contacto y le agrega un numero telefonico
+
     public static void agregarTelefonoAContacto(Contacto contacto) {
         System.out.println("Introduce numero de telefono");
         String numeroTelefono = sc.nextLine();
@@ -111,6 +192,75 @@ public class Agenda {
         String clavePais = sc.nextLine();
 
         contacto.agregarTelefono(numeroTelefono, tipoTelefono, clavePais);
+    }
+
+    // busqueda para eliminar persona
+
+    public static ArrayList<Integer> buscarPersona(String dato) {
+        ArrayList<Integer> posicion = new ArrayList<Integer>();
+
+        for (Contacto contacto : contactos) {
+            if (contacto.getNombre().equalsIgnoreCase(dato) || contacto.getAlias().equalsIgnoreCase(dato)) {
+                posicion.add(contactos.indexOf(contacto));
+            }
+        }
+        return posicion;
+    }
+
+    public static ArrayList<Integer> eliminarPersona(String nombre, String apellido) {
+        ArrayList<Integer> posicion = new ArrayList<Integer>();
+
+        for (Contacto contacto : contactos) {
+            if (contacto.getNombre().equalsIgnoreCase(nombre) && contacto.getApellido().equalsIgnoreCase(apellido)) {
+                posicion.add(contactos.indexOf(contacto));
+            }
+        }
+        return posicion;
+    }
+
+    // consultar por nombre, apellido, alias, o telefono
+
+    public static ArrayList<Integer> consultarPersona(String dato) {
+        ArrayList<Integer> posicion = new ArrayList<Integer>();
+
+        for (Contacto contacto : contactos) {
+            if (contacto.getNombre().equalsIgnoreCase(dato) || contacto.getApellido().equalsIgnoreCase(dato)
+                    || contacto.getAlias().equalsIgnoreCase(dato) || consultarTelefono(contacto, dato)) {
+                posicion.add(contactos.indexOf(contacto));
+            }
+
+        }
+        return posicion;
+    }
+
+    public static boolean consultarTelefono(Contacto contacto, String dato) {
+        for (Telefono telefono : contacto.getTelefonos()) {
+            return telefono.getNumTelefono().equalsIgnoreCase(dato);
+        }
+
+        return false;
+    }
+
+    // consultar por tipo de telefono
+
+    public static ArrayList<Integer> consultarTipoTelefono(char dato) {
+        ArrayList<Integer> posicion = new ArrayList<Integer>();
+
+        for (Contacto contacto : contactos) {
+            if (consultarTipo(contacto, dato)) {
+                posicion.add(contactos.indexOf(contacto));
+            }
+
+        }
+        return posicion;
+    }
+
+    public static boolean consultarTipo(Contacto contacto, char dato) {
+        for (Telefono telefono : contacto.getTelefonos()) {
+            return Character.toLowerCase(telefono.getTipoTelefono()) == Character.toLowerCase(dato);
+        }
+
+        return false;
     }
 
     // utiliza escape para limpiar la consola y posicionar el cursor al inicio
