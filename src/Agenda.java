@@ -23,6 +23,7 @@ public class Agenda {
                             "\t5.Eliminar Persona\n" +
                             "\t6.Consultar Persona\n" +
                             "\t7.Ordenar el Directorio\n" +
+                            "\t8.Agregar telefono a persona\n" +
                             "\t0.Finalizar Programa\n");
 
             // pregunta por la opcion
@@ -138,11 +139,34 @@ public class Agenda {
                     Collections.sort(contactos);
 
                     // contactos.sort(new Comparator<Contacto>() {
-                    //     public int compare(Contacto este, Contacto siguiente) {
-                    //         return String.;
-                    //     }
+                    // public int compare(Contacto este, Contacto siguiente) {
+                    // return String.;
+                    // }
                     // });
 
+                    break;
+                }
+                case 8: {
+                    System.out.println("Escriba el nombre o alias de la persona: " + "\n");
+                    String dato = sc.nextLine();
+
+                    ArrayList<Integer> personas = buscarPersona(dato);
+
+                    if (personas.size() < 0) {
+                        System.out.println("\nNo se encontro la persona");
+                    } else {
+                        for (Integer index : personas) {
+                            System.out.println("¿Esta es la persona?\n");
+                            System.out.println(contactos.get(index).toString() + "\n");
+
+                            System.out.println("¿Es esta el contacto? (Y o N) \n");
+                            String respuesta = sc.nextLine();
+
+                            if (respuesta.equalsIgnoreCase("y")) {
+                                agregarTelefonoAContacto(contactos.get(index));
+                            }
+                        }
+                    }
                     break;
                 }
                 case 0: {
@@ -284,7 +308,7 @@ public class Agenda {
         }
         return salida;
     }
-
+    
     // instancia 4 contactos por defecto sin telefono
     public static void contactosIniciales() {
         String[] nombres = { "Lucia", "Bertha", "Guilermo", "Jose Luis" };
@@ -296,5 +320,4 @@ public class Agenda {
             contactos.add(new Contacto(nombres[i], apellidos[i], alias[i], sexo[i]));
         }
     }
-
 }
